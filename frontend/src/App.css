@@ -1,0 +1,142 @@
+.footer {
+  position: absolute;
+  /* bottom: 1%; */
+  left: 25%;
+  right: 50%;
+  width: 50%;
+}
+
+.navbar-welcome {
+  padding-left: 50px;
+}
+
+.navbar-name {
+  font-family: sans-serif;
+  color: yellow;
+  font-weight: bold;
+  padding-left: 15px;
+}
+
+.header-second {
+  color: blueviolet;
+  text-align: justify;
+  font-family: Gurmukhi Sangam MN;
+  font-weight: bolder;
+}
+
+.header-first {
+  text-align: center;
+  color: orangered;
+}
+
+.home-card {
+  width: calc(100% + -36px) !important;
+  margin-left: 0px !important;
+  margin-top: 25px !important;
+}
+
+.home-space-text-field {
+  margin-bottom: 15px !important;
+}
+
+.item-header {
+  text-align: justify;
+  background-color: #1976d2;
+  padding: 10px;
+  margin-top: -16px;
+  width: calc(100% + 12px);
+  margin-left: -16px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: white;
+  font-weight: bold;
+}
+
+.card-btn {
+  margin-top: 15px !important;
+}
+
+.expense-select {
+  width: 100% !important;
+  margin-top: 15px !important;
+  margin-left: 0px !important;
+}
+
+.expense-select-label {
+  color: #1976d2 !important;
+}
+
+.budget-card {
+  height: calc(100% - 32px) !important;
+}
+
+.budget-card-btn {
+  position: relative !important;
+  top: 64px !important;
+}
+
+.card-header-first {
+  margin-left: 10px;
+}
+
+.card-header-second {
+  text-align: center;
+}
+
+.progress {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+}
+
+.budget-spend {
+  
+  position: relative;
+  right: -5%
+}
+
+.budget-remaining {
+  position: relative;
+  left: -5%;
+  float: right;
+  color:black;
+}
+
+.budget-btn {
+  clear: both;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+}
+.total-expense {
+  color:black;
+}
+.budget-action {
+  float: right;
+}
+.budget-add-clear-btn {
+  margin-left: 5px !important;
+}
+.pointer {
+  cursor: pointer;
+}
+.custom-tooltip {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+.chart-style {
+  border: 1px solid whitesmoke;
+  margin: 6px 0px 0px 0px;
+  padding: 0;
+  width: 100%;
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+}
