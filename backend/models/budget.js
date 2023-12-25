@@ -22,6 +22,8 @@ const budgetSchema = mongoose.Schema({
         timestamps: true
     }
 );
+
+// set a unique key to combine with both userId and name
 budgetSchema.index({ userId: 1, name: 1 }, { unique: true });
 
 module.exports =  mongoose.model('Budget',budgetSchema)

@@ -3,9 +3,9 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import { useDataContext } from '../context';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
+import { useDataContext } from '../context'; // to share data across the app
 
 import { Item } from '../helper';
 

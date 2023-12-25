@@ -182,6 +182,7 @@ const totalExpenses = async (req, res) => {
     }
 }
 
+// get all budgets and its associated expenses
 const budgetExpenses = async (req, res) => {
     try {
         const userId = req.user._id;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import CustomPieChart from '../components/pieChart';
 import axios from "axios";
 import Grid from '@mui/material/Grid';
-import Table from '../components/Table';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,6 +10,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
 import { setNetworkHeader, months } from '../helper';
+import Table from '../components/Table';
 
 const Profile = () => {
   const [chartData, setChartData] = useState('');
@@ -84,7 +84,7 @@ const Profile = () => {
         </Grid>
         <Grid item lg={6} xs={12} md={6} sm={12} style={{ "marginTop": "5px", "width": "" }}>
           <TextField style={{ marginBottom: 15 }} width={210} onKeyUp={searchName} id="standard-basic" placeholder='Enter name to search ...' focused={true} label="Name" variant="standard" />
-          <Table data={budgets} showBudget={true} showAction={false} search={searchName} ></Table>
+          <Table data={budgets} showBudget={true} showAction={false} ></Table>
         </Grid>
       </Grid>
     </>

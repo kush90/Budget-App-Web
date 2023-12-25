@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const validator = require('validator');
-const bcrypt = require('bcrypt');
+
 
 
 const createToken = (_id) => {

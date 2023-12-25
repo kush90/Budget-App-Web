@@ -49,6 +49,7 @@ const update = async (req, res) => {
 
 }
 
+// get all expenses and  has option to filter by name and createdAt
 const getAll = async (req, res) => {
     try {
         const userId = req.user._id;

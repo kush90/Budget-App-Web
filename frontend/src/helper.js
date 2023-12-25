@@ -13,6 +13,7 @@ export const clearStorage = (key) =>{
     localStorage.clear();
 }
 
+// capitalize to first letter
 export const capitalize = (str) => {
     if(str)return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -25,6 +26,7 @@ export const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
+  // set token to request header
   export const setNetworkHeader = ()=>{
     let user = JSON.parse(getStorage('user'));
     return { headers: { "Authorization": `Bearer ${user.token}`, 'Content-Type': 'application/json' } }

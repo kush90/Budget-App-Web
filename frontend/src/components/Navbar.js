@@ -50,7 +50,7 @@ export default function Navbar() {
                     </Tooltip>
                     <Typography variant="h6" component="div" color="inherit" sx={{ flexGrow: 1 }}>
                         <Tooltip title={location.pathname !== '/home' ? 'Click on this to see the dashboard' : ''}>
-                            <span onClick={() => { navigate('/home') }} className='pointer'>Manage Your Budgets</span>
+                            <span onClick={() => { navigate('/home') }} className='pointer title1'>Manage Your Budgets</span>
                         </Tooltip>
                         <Typography className='navbar-welcome' variant="span" component="span">
                             Welcome
@@ -62,10 +62,11 @@ export default function Navbar() {
                         </Tooltip>
                     </Typography>
 
-
-                    <IconButton color="inherit" aria-label="add an alarm" onClick={logout}>
-                        <ExitToAppIcon />
-                    </IconButton>
+                    <Tooltip title="Logout">
+                        <IconButton color="inherit" aria-label="add an alarm" onClick={logout}>
+                            <ExitToAppIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Toolbar>
             </AppBar>
         </Box>
