@@ -52,7 +52,13 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
 
   useEffect(() => {
     if (data) setTableData(data)
-  }, [data]); //
+  }, [data]); 
+
+  const totalExpenses = () => {
+    return data?.reduce((accumulator, object) => {
+      return accumulator + object.amount;
+    }, 0);
+  }
 
   return (
     <Root sx={{ width: '100%' }}>
@@ -120,6 +126,11 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
           )}
         </tbody>
         <tfoot>
+        <tr >
+            <td  style={{
+                      "color": "red"
+                    }} align="right" colSpan={5}>Total : {totalExpenses()}</td>
+          </tr>
           <tr>
             <CustomTablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
