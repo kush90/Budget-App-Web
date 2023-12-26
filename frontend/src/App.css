@@ -161,6 +161,14 @@
   text-align: center;
 }
 
+.over-budget {
+  display: inline-block;
+padding: 5px;
+position: relative;
+background-color: red;
+color: white;
+}
+
 @media screen and (max-width: 600px) {
   .title1 {
     display: none;

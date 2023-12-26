@@ -59,6 +59,11 @@ export default function BudgetItem({ budget,deleteBudgetClick }) {
       "color": `hsl(${color})`, "border": "1px solid whitesmoke"
     }}>
 
+      {
+        (spent > amount &&
+          <span className='over-budget'>*** Over Spent</span>
+          )
+      }
       <div className="progress-text">
         <h3 className='card-header-first'>{capitalize(name)} <small className='total-expense'>({totalExpenses} Expenses)</small>
           <span className='budget-action'>
