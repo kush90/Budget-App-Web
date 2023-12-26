@@ -130,6 +130,7 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
             }} align="right" colSpan={5}>Total : {totalExpenses()}</td>
           </tr>
           <tr>
+            {tableData.length > 0 &&
             <CustomTablePagination
               rowsPerPageOptions={rowsPerPageOptions}
               colSpan={5}
@@ -148,6 +149,7 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
+}
           </tr>
         </tfoot>
       </table>
