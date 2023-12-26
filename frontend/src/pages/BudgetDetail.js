@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 import { setNetworkHeader,capitalize } from '../helper';
 import AddExpenseForm from '../components/AddExpenseForm';
-import Table from '../components/Table';
 import { useDataContext } from '../context';
 import BudgetItem from '../components/BudgetItem';
+import ClientSideTable from '../components/ClientSideTable';
 
 
 
@@ -141,7 +141,7 @@ export default function BudgetDetail() {
       <h2 style={{"marginLeft":"22px"}}>Expenses ({budget?.expenses?.length})</h2>
       <Grid className='home-card' container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 3 }}>
         <Grid item xs={12}>
-          <Table data={budget.expenses} handleDelete={handleDelete} showBudget={false}></Table>
+          <ClientSideTable data={budget.expenses} handleDelete={handleDelete} showBudget={false}></ClientSideTable>
         </Grid>
 
       </Grid>

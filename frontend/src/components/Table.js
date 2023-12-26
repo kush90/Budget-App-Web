@@ -13,9 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { formatDateToLocaleString } from '../helper';
 import { useDataContext } from '../context';
 
+let rowsPerPageOptions = [5, 10, 25, { label: 'All', value: -1 }]
 
-
-export default function TableCustomized({ data, handleDelete, showBudget = true, showAction = true}) {
+export default function TableCustomized({ data, handleDelete, showBudget = true, showAction = true, tableNextBtn, tablePerPage, paginate }) {
   const navigate = useNavigate();
   const { updateData } = useDataContext();
   const [tableData, setTableData] = React.useState([]);
@@ -26,12 +26,14 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tableData.length) : 0;
 
   const handleChangePage = (event, newPage) => {
+    tableNextBtn(newPage)
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    tablePerPage(event.target.value, 0)
   };
 
   const editExpense = (expense) => {
@@ -51,11 +53,15 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
   };
 
   useEffect(() => {
-    if (data) setTableData(data)
-  }, [data]); 
+    if (data && paginate) {
+      setTableData(data);
+      setPage(paginate.page);
+      setRowsPerPage(paginate.rows);
+    }
+  }, [data]);
 
   const totalExpenses = () => {
-    return data?.reduce((accumulator, object) => {
+    return tableData?.reduce((accumulator, object) => {
       return accumulator + object.amount;
     }, 0);
   }
@@ -74,68 +80,60 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
           </tr>
         </thead>
         <tbody>
-          {(rowsPerPage > 0
-            ? tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : tableData
-          ).map((row, index) => (
-            <tr key={index}>
-              <td data-label="No" >{index = index + 1}</td>
-              <td data-label="Name">{row.name}</td>
-              <td align="right" data-label="Amount">
-                {row.amount}
-              </td>
-              {showBudget && (
-                <td data-label="Budget">
-                  <span
-                    onClick={() => navigate(`/home/budget/${row.budgetId?._id}`)}
-                    style={{
-                      "color": `hsl(${row.budgetId?.color})`, "cursor": "pointer"
-                    }}
-                  >
-                    {row.budgetId?.name}
-                  </span>
+          {
+            tableData.map((row, index) => (
+              <tr key={index}>
+                <td data-label="No" >{index = index + 1}</td>
+                <td data-label="Name">{row.name}</td>
+                <td align="right" data-label="Amount">
+                  {row.amount}
                 </td>
-              )}
+                {showBudget && (
+                  <td data-label="Budget">
+                    <span
+                      onClick={() => navigate(`/home/budget/${row.budgetId?._id}`)}
+                      style={{
+                        "color": `hsl(${row.budgetId?.color})`, "cursor": "pointer"
+                      }}
+                    >
+                      {row.budgetId?.name}
+                    </span>
+                  </td>
+                )}
 
-              <td align="right" data-label="Created At">
-                {formatDateToLocaleString(row.createdAt)}
-              </td>
-              {showAction &&
-                <td align="left" data-label="Action">
-                  <Tooltip title="To edit the expense, see the above update expense form!">
-                    <IconButton aria-label="edit" onClick={() => editExpense(row)} size="small" color='success'>
-                      <EditIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton aria-label="delete" size="small" color="error" onClick={() => deleteExpense(row)}>
-                      <DeleteIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
+                <td align="right" data-label="Created At">
+                  {formatDateToLocaleString(row.createdAt)}
                 </td>
+                {showAction &&
+                  <td align="left" data-label="Action">
+                    <Tooltip title="To edit the expense, see the above update expense form!">
+                      <IconButton aria-label="edit" onClick={() => editExpense(row)} size="small" color='success'>
+                        <EditIcon fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton aria-label="delete" size="small" color="error" onClick={() => deleteExpense(row)}>
+                        <DeleteIcon fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+                  </td>
 
-              }
+                }
 
-            </tr>
-          ))}
-
-          {emptyRows > 0 && (
-            <tr style={{ height: 34 * emptyRows }}>
-              <td colSpan={4} aria-hidden />
-            </tr>
-          )}
+              </tr>
+            ))}
         </tbody>
         <tfoot>
-        <tr >
-            <td  style={{
-                      "color": "red"
-                    }} align="right" colSpan={5}>Total : {totalExpenses()}</td>
+          <tr >
+            <td style={{
+              "color": "red"
+            }} align="right" colSpan={5}>Total : {totalExpenses()}</td>
           </tr>
           <tr>
             <CustomTablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              rowsPerPageOptions={rowsPerPageOptions}
               colSpan={5}
-              count={tableData.length}
+              count={paginate.totalItems}
               rowsPerPage={rowsPerPage}
               page={page}
               slotProps={{
@@ -180,8 +178,10 @@ const grey = {
 const Root = styled('div')(
   ({ theme }) => `
  table {
+  min-height:310px;
   border: 1px solid whitesmoke;
   border-collapse: collapse;
+  border-radius:4px;
   margin: 0;
   padding: 0;
   width: 100%;

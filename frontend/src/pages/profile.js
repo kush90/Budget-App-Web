@@ -16,21 +16,26 @@ const Profile = () => {
   const [chartData, setChartData] = useState('');
   const [budgets, setBudgets] = useState([]);
   const [month, setMonth] = useState('');
+  const [paginate, setPaginate] = useState('');
 
   const handleChangeMonth = async (event) => {
     setMonth(event.target.value);
     const response = await axios.get(`http://localhost:4000/api/expense/getAll?month=${event.target.value}`, setNetworkHeader());
     const response1 = await axios.get(`http://localhost:4000/api/budget/chartData?month=${event.target.value}`, setNetworkHeader());
-    setChartData(response1.data.data)
-    setBudgets(response.data.data)
+    setChartData(response1.data.data);
+    setBudgets(response.data.data);
+    setPaginate(response.data.paginate);
   }
   useEffect(() => {
+    
     async function fetchData() {
       try {
         const response = await axios.get(`http://localhost:4000/api/budget/chartData`, setNetworkHeader());
         const response1 = await axios.get(`http://localhost:4000/api/expense/getAll`, setNetworkHeader())
         setChartData(response.data.data);
         setBudgets(response1.data.data);
+        setPaginate(response1.data.paginate);
+
       }
       catch (error) {
       }
@@ -42,6 +47,18 @@ const Profile = () => {
   const searchName = async (event) => {
     const response = await axios.get(`http://localhost:4000/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
     setBudgets(response.data.data)
+  }
+
+  const tableNextBtn = async(page) =>{
+    const response = await axios.get(`http://localhost:4000/api/expense/getAll?page=${page}`, setNetworkHeader());
+    setBudgets(response.data.data)
+    setPaginate(response.data.paginate);
+  }
+
+  const tablePerPage = async(rows,page) =>{
+    const response = await axios.get(`http://localhost:4000/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
+    setBudgets(response.data.data)
+    setPaginate(response.data.paginate);
   }
   return (
 
@@ -84,7 +101,7 @@ const Profile = () => {
         </Grid>
         <Grid item lg={6} xs={12} md={6} sm={12} style={{ "marginTop": "5px", "width": "" }}>
           <TextField style={{ marginBottom: 15 }} width={210} onKeyUp={searchName} id="standard-basic" placeholder='Enter name to search ...' focused={true} label="Name" variant="standard" />
-          <Table data={budgets} showBudget={true} showAction={false} ></Table>
+          <Table data={budgets} showBudget={true} showAction={false} tableNextBtn={tableNextBtn} tablePerPage={tablePerPage} paginate={paginate} ></Table>
         </Grid>
       </Grid>
     </>

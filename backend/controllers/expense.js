@@ -52,6 +52,9 @@ const update = async (req, res) => {
 // get all expenses and  has option to filter by name and createdAt
 const getAll = async (req, res) => {
     try {
+        rows = req.query.rows ? +req.query.rows : 5;
+        page = req.query.page ? +req.query.page : 0;
+        const totalItems = await Expense.countDocuments();
         const userId = req.user._id;
         let query;
         if (Object.keys(req.query).length !== 0) {
@@ -59,12 +62,12 @@ const getAll = async (req, res) => {
             query = {
                 userId: userId
             };
-            
+
             // Check if req.query.search is present and not empty
             if (req.query.search) {
                 query.name = { '$regex': req.query.search, '$options': 'i' };
             }
-            
+
             // Check if req.query.month is present and not empty
             if (req.query.month) {
                 query.$expr = {
@@ -80,8 +83,12 @@ const getAll = async (req, res) => {
                 userId: userId,
             }
         }
-        const expenses = await Expense.find(query).sort({ createdAt: -1 }).populate('budgetId');
-        res.status(200).json({ data: expenses })
+        let paginate = {
+            totalItems, page, rows
+        }
+        const expenses = await Expense.find(query).skip(rows !== -1 ? page * rows : '')
+            .limit(rows !== - 1 ? rows : '').sort({ createdAt: -1 }).populate('budgetId');
+        res.status(200).json({ data: expenses, paginate })
     } catch (error) {
         res.status(400).json({ "error": error.message })
     }
