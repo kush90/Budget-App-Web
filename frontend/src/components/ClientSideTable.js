@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 import { formatDateToLocaleString } from '../helper';
 import { useDataContext } from '../context';
+import CustomModal from './CustomModal';
 
 let rowsPerPageOptions = [5, 10, 25, { label: 'All', value: -1 }]
 
@@ -21,6 +22,9 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
     const [tableData, setTableData] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [openModal, setOpenModal] = React.useState(false);
+    const [currentRow, setCurrentRow] = React.useState('');
+
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tableData.length) : 0;
@@ -40,7 +44,8 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
     }
 
     const deleteExpense = async (expense) => {
-        handleDelete(expense._id)
+      setOpenModal(true)
+      setCurrentRow(expense);
     }
 
     const scrollToTop = () => {
@@ -62,6 +67,14 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
             return accumulator + object.amount;
         }, 0);
     }
+
+    const closeModal = (value) => {
+      if (value === 'yes') {
+        handleDelete(currentRow._id)
+      }
+      setOpenModal(false);
+      setCurrentRow('');
+    };
 
     return (
         <Root sx={{ width: '100%' }}>
@@ -158,6 +171,8 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
                     </tr>
                 </tfoot>
             </table>
+            <CustomModal openModal={openModal} closeModal={closeModal} />
+
         </Root>
     );
 }
