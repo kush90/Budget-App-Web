@@ -17,7 +17,7 @@ app.use(express.json())
 
 app.use(cors());
 
-app.use('/test/welcome',auth,(req,res)=>{
+app.use('/test/welcome',(req,res)=>{
   res.status(200).json({message:"hi"})
 });
 
