@@ -28,7 +28,7 @@ app.use('/api/budget',budgetRoutes);
 app.use('/api/expense',expenseRoutes)
 
 // connect to db
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_ONLINE_URL)
   .then(() => {
     // listen for requests
     app.listen(process.env.PORT, () => {
