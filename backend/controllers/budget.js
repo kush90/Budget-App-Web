@@ -61,7 +61,7 @@ const getAll = async (req, res) => {
             query = {
                 userId: userId
             };
-            
+
             // Check if req.query.search is present and not empty
             if (req.query.search) {
                 query.name = { '$regex': req.query.search, '$options': 'i' };
@@ -134,17 +134,43 @@ const remove = async (req, res) => {
 const totalExpenses = async (req, res) => {
     try {
         const userId = req.user._id;
+        let startDate, endDate
+        if (req.query.selectedDate) {
+            const targetDate = new Date(req.query.selectedDate);
+            startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+            endDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 23, 59, 59, 999);
+        }
+
         const result = await Expense.aggregate(
             [
-                { $match: { userId: userId,
-                    $expr: {
-                    $cond: {
-                        if: { $eq: [req.query.month, undefined] },
-                        then: {},
-                        else: { $eq: [{ $month: '$createdAt' }, parseInt(req.query.month)] }
-                      }
+                {
+                    $match: {
+                        userId: userId,
+                        $expr: {
+                            $and: [
+                                {
+                                    $cond: {
+                                        if: { $eq: [req.query.month, undefined] },
+                                        then: true,
+                                        else: { $eq: [{ $month: '$createdAt' }, parseInt(req.query.month)] }
+                                    }
+                                },
+                                {
+                                    $cond: {
+                                        if: { $eq: [req.query.selectedDate, undefined] },
+                                        then: true,
+                                        else: {
+                                            $and: [
+                                                { $gte: ['$createdAt', startDate] },
+                                                { $lte: ['$createdAt', endDate] }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
-                } },
+                },
                 {
                     $group: {
                         _id: '$budgetId',

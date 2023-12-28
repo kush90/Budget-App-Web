@@ -177,6 +177,10 @@
   border: 1px solid whitesmoke !important;
 }
 
+.filter-div {
+  height: 100px;
+}
+
 .modal-action-btn {
   float: right;
   position: relative;
@@ -184,12 +188,37 @@
   left: 18px;
 }
 
+.date-picker-box {
+  position: relative;
+
+}
+
+.clear-btn {
+  position: relative;
+  left: 30px;
+  top: 16px;
+}
+
 @media screen and (max-width: 600px) {
   .title1 {
     display: none;
   }
 
+  .filter-div {
+    height: auto;
+  }
+
+  .date-picker-box {
+    position: relative;
+    top: -20px;
+  }
+
   .navbar-welcome {
     padding-left: 0px;
+  }
+
+  .clear-btn {
+    top: -9px;
+    left: 0px;
   }
 }

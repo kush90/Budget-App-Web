@@ -8,15 +8,21 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import DatePicker from "react-datepicker";
 
 import { setNetworkHeader, months } from '../helper';
 import Table from '../components/Table';
+
+import "react-datepicker/dist/react-datepicker.css";
+
 
 const Profile = () => {
   const [chartData, setChartData] = useState('');
   const [budgets, setBudgets] = useState([]);
   const [month, setMonth] = useState('');
   const [paginate, setPaginate] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
 
   const handleChangeMonth = async (event) => {
     setMonth(event.target.value);
@@ -25,22 +31,21 @@ const Profile = () => {
     setChartData(response1.data.data);
     setBudgets(response.data.data);
     setPaginate(response.data.paginate);
+    setSelectedDate('');
+  }
+  async function fetchData() {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/budget/chartData`, setNetworkHeader());
+      const response1 = await axios.get(`http://localhost:4000/api/expense/getAll`, setNetworkHeader())
+      setChartData(response.data.data);
+      setBudgets(response1.data.data);
+      setPaginate(response1.data.paginate);
+
+    }
+    catch (error) {
+    }
   }
   useEffect(() => {
-    
-    async function fetchData() {
-      try {
-        const response = await axios.get(`http://localhost:4000/api/budget/chartData`, setNetworkHeader());
-        const response1 = await axios.get(`http://localhost:4000/api/expense/getAll`, setNetworkHeader())
-        setChartData(response.data.data);
-        setBudgets(response1.data.data);
-        setPaginate(response1.data.paginate);
-
-      }
-      catch (error) {
-      }
-    }
-
     fetchData();
   }, []);
 
@@ -49,26 +54,42 @@ const Profile = () => {
     setBudgets(response.data.data)
   }
 
-  const tableNextBtn = async(page) =>{
+  const tableNextBtn = async (page) => {
     const response = await axios.get(`http://localhost:4000/api/expense/getAll?page=${page}`, setNetworkHeader());
     setBudgets(response.data.data)
     setPaginate(response.data.paginate);
   }
 
-  const tablePerPage = async(rows,page) =>{
+  const tablePerPage = async (rows, page) => {
     const response = await axios.get(`http://localhost:4000/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
     setBudgets(response.data.data)
     setPaginate(response.data.paginate);
   }
+
+  const changeDate = async (date) => {
+    setSelectedDate(date);
+    const response = await axios.get(`http://localhost:4000/api/expense/getAll?selectedDate=${date}`, setNetworkHeader());
+    setBudgets(response.data.data)
+    const response1 = await axios.get(`http://localhost:4000/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
+    setChartData(response1.data.data);
+    setMonth('');
+
+  }
+
+  const clearFilter = () =>{
+    fetchData();
+    setSelectedDate('');
+    setMonth('')
+  }
   return (
 
     <>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
-        <Grid item lg={3} xs={12} md={6} sm={12}>
+      <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
+        <Grid item lg={4} xs={12} md={3} sm={12}>
           <h1>Your expenses report</h1>
         </Grid>
-        <Grid item lg={9} xs={12} md={6} sm={12}>
-          <Box sx={{ width: 90 }}>
+        <Grid item lg={2} xs={12} md={3} sm={12} className='filter-div'>
+          <Box>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">Month</InputLabel>
               <Select
@@ -88,6 +109,23 @@ const Profile = () => {
                 }
               </Select>
             </FormControl>
+
+          </Box>
+        </Grid>
+        <Grid item lg={3} xs={12} md={3} sm={12}>
+          <Box className="date-picker-box">
+            <p style={{ marginLeft: 4 }}>Select Date</p>
+            <DatePicker
+              showIcon
+              selected={selectedDate}
+              onChange={changeDate}
+            />
+
+          </Box>
+        </Grid>
+        <Grid item lg={2} xs={12} md={3} sm={12}>
+          <Box >
+            <Button onClick={clearFilter} className="clear-btn" size='small' variant="outlined">Clear Filter</Button>
           </Box>
         </Grid>
       </Grid>

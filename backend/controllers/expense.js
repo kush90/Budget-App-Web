@@ -77,6 +77,17 @@ const getAll = async (req, res) => {
                     ]
                 };
             }
+
+            if (req.query.selectedDate) {
+                const targetDate = new Date(req.query.selectedDate);
+                // Set the start and end date for the day
+                const startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 0, 0, 0, 0);
+                const endDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), 23, 59, 59, 999);
+                query.createdAt = {
+                    $gte: startDate, // Greater than or equal to the start of the day
+                    $lt: endDate // Less than the end of the day
+                }
+            }
         }
         else {
             query = {
