@@ -54,7 +54,7 @@ function App() {
       setMessage({ msg: location.state.message, status: 'success' });
       setErrorControl(true);
     }
-  },[''])
+  },[location.state])
 
   const handleSubmit = async (event) => {
     event.preventDefault();

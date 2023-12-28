@@ -50,7 +50,7 @@ export default function BudgetItem({ budget, deleteBudgetClick }) {
       setTotalExpenses(expenses.length);
       setSpent(calculateSpentByBudget(expenses, _id))
     }
-  });
+  },[_id,expenses]);
 
   const budgetDetail = () => {
     navigate(`budget/${_id}`);

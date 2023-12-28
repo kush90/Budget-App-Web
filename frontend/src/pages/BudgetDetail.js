@@ -47,7 +47,7 @@ export default function BudgetDetail() {
     }
     fetchData();
     fetchBudgetsData();
-  }, [params.id]);
+  }, []);
 
   function handleClose(event, reason) {
     if (reason === 'clickaway') {
