@@ -10,6 +10,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DatePicker from "react-datepicker";
+import LinearProgress from '@mui/material/LinearProgress';
 
 import { setNetworkHeader, months,API_URL } from '../helper';
 import Table from '../components/Table';
@@ -23,6 +24,7 @@ const Profile = () => {
   const [month, setMonth] = useState('');
   const [paginate, setPaginate] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const handleChangeMonth = async (event) => {
     setMonth(event.target.value);
@@ -34,15 +36,17 @@ const Profile = () => {
     setSelectedDate('');
   }
   async function fetchData() {
+    setLoading(true)
     try {
       const response = await axios.get(`${API_URL}/api/budget/chartData`, setNetworkHeader());
       const response1 = await axios.get(`${API_URL}/api/expense/getAll`, setNetworkHeader())
       setChartData(response.data.data);
       setBudgets(response1.data.data);
       setPaginate(response1.data.paginate);
-
+      setLoading(false)
     }
     catch (error) {
+      setLoading(false)
     }
   }
   useEffect(() => {
@@ -50,29 +54,37 @@ const Profile = () => {
   }, []);
 
   const searchName = async (event) => {
+    setLoading(true)
     const response = await axios.get(`${API_URL}/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
     setBudgets(response.data.data)
+    setLoading(false)
   }
 
   const tableNextBtn = async (page) => {
+    setLoading(true)
     const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}`, setNetworkHeader());
     setBudgets(response.data.data)
     setPaginate(response.data.paginate);
+    setLoading(false)
   }
 
   const tablePerPage = async (rows, page) => {
+    setLoading(true)
     const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
     setBudgets(response.data.data)
     setPaginate(response.data.paginate);
+    setLoading(false)
   }
 
   const changeDate = async (date) => {
+    setLoading(true)
     setSelectedDate(date);
     const response = await axios.get(`${API_URL}/api/expense/getAll?selectedDate=${date}`, setNetworkHeader());
     setBudgets(response.data.data)
     const response1 = await axios.get(`${API_URL}/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
     setChartData(response1.data.data);
     setMonth('');
+    setLoading(false)
 
   }
 
@@ -84,6 +96,7 @@ const Profile = () => {
   return (
 
     <>
+     {loading ?? <LinearProgress />}
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
         <Grid item lg={4} xs={12} md={3} sm={12}>
           <h1>Your expenses report</h1>

@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import './App.css';
 import { createStorage, API_URL } from "./helper";
@@ -41,6 +42,7 @@ function App() {
   const location = useLocation();
   const [message, setMessage] = React.useState('');
   const [errorControl, setErrorControl] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   function handleClose(event, reason) {
     if (reason === 'clickaway') {
       return;
@@ -57,6 +59,7 @@ function App() {
   },[location.state])
 
   const handleSubmit = async (event) => {
+    setLoading(true);
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     let obj = {
@@ -71,18 +74,24 @@ function App() {
           createStorage('user', response.data);
           setMessage({ msg: response.data.message, status: 'success' });
           setErrorControl(true);
+          setLoading(false)
           navigate('/home');
         }
       })
       .catch(error => {
-        setMessage({ msg: error.response.data.error, status: 'error' });
-        setErrorControl(true);
-        console.log(error)
+        if(error.response.status === 400) {
+          setMessage({ msg: error.response.data.error, status: 'error' });
+          setErrorControl(true);
+          setLoading(false)
+          
+        }
+        
       })
   };
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      {loading ?? <LinearProgress />}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

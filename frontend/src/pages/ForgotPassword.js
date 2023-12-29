@@ -2,7 +2,6 @@ import * as React from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
-
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -15,7 +14,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import { API_URL } from '../helper';
+import LinearProgress from '@mui/material/LinearProgress';
 
 function Copyright(props) {
   return (
@@ -36,7 +37,10 @@ function ForgotPassword() {
   const navigate = useNavigate();
   const [message, setMessage] = React.useState('');
   const [errorControl, setErrorControl] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
   const handleSubmit = async (event) => {
+    setLoading(true)
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const obj = {
@@ -50,12 +54,14 @@ function ForgotPassword() {
         if (response.status === 200) {
           setMessage({ msg: response.data.message, status: 'success' });
           setErrorControl(true);
+          setLoading(false)
           navigate('/',{state:{message:response.data.message}});
         }
       })
       .catch(error => {
         setMessage({ msg: error.response.data.error, status: 'error' });
         setErrorControl(true);
+        setLoading(false)
       })
   };
   function handleClose(event, reason) {
@@ -68,6 +74,7 @@ function ForgotPassword() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+       {loading ?? <LinearProgress />}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

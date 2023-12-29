@@ -5,8 +5,9 @@ import { useParams } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
+import LinearProgress from '@mui/material/LinearProgress';
 
-import { setNetworkHeader,capitalize, API_URL } from '../helper';
+import { setNetworkHeader, capitalize, API_URL } from '../helper';
 import AddExpenseForm from '../components/AddExpenseForm';
 import { useDataContext } from '../context';
 import BudgetItem from '../components/BudgetItem';
@@ -22,14 +23,17 @@ export default function BudgetDetail() {
   const [budget, setBudget] = useState('');
   const [budgets, setBudgets] = useState([]);
   const { sharedData } = useDataContext();
+  const [loading, setLoading] = React.useState(false);
 
   async function fetchData() {
     if (params.id) {
       try {
         const response = await axios.get(`${API_URL}/api/budget/get/${params.id}`, setNetworkHeader());
         setBudget(response.data.data);
+        setLoading(false)
       }
       catch (error) {
+        setLoading(false)
       }
     }
 
@@ -41,13 +45,17 @@ export default function BudgetDetail() {
         const response = await axios.get(`${API_URL}/api/budget/getAll`, setNetworkHeader());
         if (response.status === 200) {
           setBudgets(response.data.data);
+          setLoading(false)
         }
       }
-      catch (error) { }
+      catch (error) { 
+        setLoading(false)
+      }
     }
     fetchData();
     fetchBudgetsData();
-  }, []);
+
+  }, [params.id, message]);
 
   function handleClose(event, reason) {
     if (reason === 'clickaway') {
@@ -57,21 +65,24 @@ export default function BudgetDetail() {
     setErrorControl(false);
   };
   const handleCreateUpdateExpenseClick = async (data) => {
+    setLoading(true)
     if (sharedData && sharedData.type === 'expense') {
       try {
         const response = await axios.patch(`${API_URL}/api/expense/update/${sharedData.data._id}`, data, setNetworkHeader());
         setMessage({ msg: response.data.message, status: 'success' });
         let newData = budget;
         let arr = newData.expenses;
-        const newArr = arr.map((obj) => 
+        const newArr = arr.map((obj) =>
           obj._id === sharedData.data._id ? { ...obj, name: data.name, amount: +data.amount } : obj
         );
         newData.expenses = newArr;
         setBudget(newData)
         setErrorControl(true);
+        setLoading(false)
       } catch (error) {
         setMessage({ msg: error.response.data.error, status: 'error' });
         setErrorControl(true);
+        setLoading(false)
       }
 
     }
@@ -86,14 +97,17 @@ export default function BudgetDetail() {
         newData.expenses = arr;
         setBudget(newData);
         setErrorControl(true);
+        setLoading(false)
       } catch (error) {
         setMessage({ msg: error.response.data.error, status: 'error' });
         setErrorControl(true);
+        setLoading(false)
       }
     }
   }
 
   const handleDelete = async (id) => {
+    setLoading(true)
     try {
       const response = await axios.delete(`${API_URL}/api/expense/delete/${id}`, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
@@ -103,42 +117,48 @@ export default function BudgetDetail() {
       data.expenses = newArr;
       setBudget(data);
       setErrorControl(true);
+      setLoading(false)
     } catch (error) {
       setMessage({ msg: error.response.data.error, status: 'error' });
       setErrorControl(true);
+      setLoading(false)
     }
   }
 
   const budgetDelete = async (id) => {
+    setLoading(true)
     try {
       const response = await axios.delete(`${API_URL}/api/budget/delete/${id}`, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
       setBudget('');
       navigate('/home')
       setErrorControl(true);
+      setLoading(false)
     } catch (error) {
       setMessage({ msg: error.response.data.error, status: 'error' });
       setErrorControl(true);
+      setLoading(false)
     }
   }
   return (
 
     <>
-    <h2 style={{
-       "marginLeft": "22px"
-    }}>Your Budget <span  style={{
-      "color": `hsl(${budget.color})`
-    }}>({capitalize(budget.name)})</span> Detail</h2>
+      {loading ?? <LinearProgress />}
+      <h2 style={{
+        "marginLeft": "22px"
+      }}>Your Budget <span style={{
+        "color": `hsl(${budget.color})`
+      }}>({capitalize(budget.name)})</span> Detail</h2>
       <Grid className='home-card' container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
-        <Grid item xs={12}  md={12} sm={12} lg={6}>
+        <Grid item xs={12} md={12} sm={12} lg={6}>
           <BudgetItem budget={budget} deleteBudgetClick={budgetDelete} />
         </Grid>
-        <Grid item xs={12}   md={12} sm={12} lg={6}>
+        <Grid item xs={12} md={12} sm={12} lg={6}>
           <AddExpenseForm budgets={budgets} handleCreateUpdateClick={handleCreateUpdateExpenseClick}></AddExpenseForm>
         </Grid>
 
       </Grid>
-      <h2 style={{"marginLeft":"22px"}}>Expenses ({budget?.expenses?.length})</h2>
+      <h2 style={{ "marginLeft": "22px" }}>Expenses ({budget?.expenses?.length})</h2>
       <Grid className='home-card' container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 3 }}>
         <Grid item xs={12}>
           <ClientSideTable data={budget.expenses} handleDelete={handleDelete} showBudget={false}></ClientSideTable>
