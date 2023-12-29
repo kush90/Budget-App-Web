@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 import { formatDateToLocaleString } from '../helper';
 import { useDataContext } from '../context';
-import CustomModal from './CustomModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 let rowsPerPageOptions = [5, 10, 25, { label: 'All', value: -1 }]
 
@@ -171,7 +171,7 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
                     </tr>
                 </tfoot>
             </table>
-            <CustomModal openModal={openModal} closeModal={closeModal} />
+            <DeleteConfirmModal openModal={openModal} closeModal={closeModal} />
 
         </Root>
     );

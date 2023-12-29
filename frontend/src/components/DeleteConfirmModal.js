@@ -16,7 +16,7 @@ const style = {
   p: 4,
 };
 
-export default function CustomModal({ openModal, closeModal }) {
+export default function DeleteConfirmModal({ openModal, closeModal }) {
   const clickAction = (value) => {
     closeModal(value)
   }

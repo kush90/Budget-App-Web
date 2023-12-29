@@ -18,7 +18,7 @@ import {
   capitalize
 } from "../helper";
 
-import CustomModal from './CustomModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 export default function BudgetItem({ budget, deleteBudgetClick }) {
   const location = useLocation();
@@ -112,7 +112,7 @@ export default function BudgetItem({ budget, deleteBudgetClick }) {
           </Grid>) : ('')}
 
         </div>
-        <CustomModal openModal={openModal} closeModal={closeModal} />
+        <DeleteConfirmModal openModal={openModal} closeModal={closeModal} />
       </Card>
 
     </>
