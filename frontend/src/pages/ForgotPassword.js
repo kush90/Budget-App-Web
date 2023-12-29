@@ -15,6 +15,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { API_URL } from '../helper';
 
 function Copyright(props) {
   return (
@@ -43,7 +44,7 @@ function ForgotPassword() {
       password: data.get('password'),
     };
     await axios.post(
-      'http://localhost:4000/api/user/forgot', obj
+      `${API_URL}/api/user/forgot`, obj
     )
       .then((response) => {
         if (response.status === 200) {

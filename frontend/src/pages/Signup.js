@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { createStorage } from "../helper";
+import { createStorage, API_URL } from "../helper";
 function Copyright(props) {
   return (
     <Typography className='footer' variant="body2" color="text.secondary" align="center" {...props}>
@@ -44,7 +44,7 @@ function Signup() {
       password: data.get('password'),
     };
     await axios.post(
-      'http://localhost:4000/api/user/signup', obj
+      `${API_URL}/api/user/signup`, obj
     )
       .then((response) => {
         if (response.status === 200) {

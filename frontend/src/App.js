@@ -16,7 +16,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 import './App.css';
-import { createStorage } from "./helper";
+import { createStorage, API_URL } from "./helper";
 
 
 function Copyright(props) {
@@ -64,7 +64,7 @@ function App() {
       password: data.get('password'),
     }
     await axios.post(
-      'http://localhost:4000/api/user/login', obj
+      `${API_URL}/api/user/login`, obj
     )
       .then((response) => {
         if (response.status === 200) {

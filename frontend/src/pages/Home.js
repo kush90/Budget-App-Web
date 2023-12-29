@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import AddBudgetForm from '../components/AddBudgetForm';
 import BudgetItem from '../components/BudgetItem';
 import { DataProvider } from '../context';
-import { setNetworkHeader, generateRandomColor } from '../helper';
+import { setNetworkHeader, generateRandomColor, API_URL } from '../helper';
 
 
 const Home = () => {
@@ -19,7 +19,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get('http://localhost:4000/api/budget/getAll', setNetworkHeader());
+        const response = await axios.get(`${API_URL}/api/budget/getAll`, setNetworkHeader());
         if (response.status === 200) {
           setBudgets(response.data.data);
         }
@@ -33,7 +33,7 @@ const Home = () => {
   const handleCreateUpdate = async (data) => {
     if (data.id) {
       try {
-        const response = await axios.patch(`http://localhost:4000/api/budget/update/${data.id}`, data, setNetworkHeader());
+        const response = await axios.patch(`${API_URL}/api/budget/update/${data.id}`, data, setNetworkHeader());
         setMessage({ msg: response.data.message, status: 'success' });
         setErrorControl(true);
         const newArr = budgets.map(obj =>
@@ -51,7 +51,7 @@ const Home = () => {
         let color;
         if (budgets) { color = generateRandomColor(budgets.length) };
         data['color'] = color;
-        const response = await axios.post('http://localhost:4000/api/budget/create', data, setNetworkHeader());
+        const response = await axios.post(`${API_URL}/api/budget/create`, data, setNetworkHeader());
         let newArr = budgets;
         newArr.unshift({ ...response.data.data, "expenses": [] });
         setBudgets(newArr);
@@ -76,7 +76,7 @@ const Home = () => {
 
   const handleCreateUpdateExpenseClick = async (data) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/expense/create', data, setNetworkHeader());
+      const response = await axios.post(`${API_URL}/api/expense/create`, data, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
       budgets.map((budget) => {
         if (budget._id === data.budgetId) {
@@ -98,7 +98,7 @@ const Home = () => {
 
   const deleteBudget = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:4000/api/budget/delete/${id}`, setNetworkHeader());
+      const response = await axios.delete(`${API_URL}/api/budget/delete/${id}`, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
       setBudgets(budgets.filter((obj) => { return obj._id !== id }))
       setErrorControl(true);
@@ -109,7 +109,7 @@ const Home = () => {
   }
 
   const searchName = async (event) => {
-    const response = await axios.get(`http://localhost:4000/api/budget/getAll?search=${event.target.value}`, setNetworkHeader());
+    const response = await axios.get(`${API_URL}/api/budget/getAll?search=${event.target.value}`, setNetworkHeader());
     setBudgets(response.data.data);
 
   }

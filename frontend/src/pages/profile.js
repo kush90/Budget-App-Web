@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DatePicker from "react-datepicker";
 
-import { setNetworkHeader, months } from '../helper';
+import { setNetworkHeader, months,API_URL } from '../helper';
 import Table from '../components/Table';
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,8 +26,8 @@ const Profile = () => {
 
   const handleChangeMonth = async (event) => {
     setMonth(event.target.value);
-    const response = await axios.get(`http://localhost:4000/api/expense/getAll?month=${event.target.value}`, setNetworkHeader());
-    const response1 = await axios.get(`http://localhost:4000/api/budget/chartData?month=${event.target.value}`, setNetworkHeader());
+    const response = await axios.get(`${API_URL}/api/expense/getAll?month=${event.target.value}`, setNetworkHeader());
+    const response1 = await axios.get(`${API_URL}/api/budget/chartData?month=${event.target.value}`, setNetworkHeader());
     setChartData(response1.data.data);
     setBudgets(response.data.data);
     setPaginate(response.data.paginate);
@@ -35,8 +35,8 @@ const Profile = () => {
   }
   async function fetchData() {
     try {
-      const response = await axios.get(`http://localhost:4000/api/budget/chartData`, setNetworkHeader());
-      const response1 = await axios.get(`http://localhost:4000/api/expense/getAll`, setNetworkHeader())
+      const response = await axios.get(`${API_URL}/api/budget/chartData`, setNetworkHeader());
+      const response1 = await axios.get(`${API_URL}/api/expense/getAll`, setNetworkHeader())
       setChartData(response.data.data);
       setBudgets(response1.data.data);
       setPaginate(response1.data.paginate);
@@ -50,27 +50,27 @@ const Profile = () => {
   }, []);
 
   const searchName = async (event) => {
-    const response = await axios.get(`http://localhost:4000/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
+    const response = await axios.get(`${API_URL}/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
     setBudgets(response.data.data)
   }
 
   const tableNextBtn = async (page) => {
-    const response = await axios.get(`http://localhost:4000/api/expense/getAll?page=${page}`, setNetworkHeader());
+    const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}`, setNetworkHeader());
     setBudgets(response.data.data)
     setPaginate(response.data.paginate);
   }
 
   const tablePerPage = async (rows, page) => {
-    const response = await axios.get(`http://localhost:4000/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
+    const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
     setBudgets(response.data.data)
     setPaginate(response.data.paginate);
   }
 
   const changeDate = async (date) => {
     setSelectedDate(date);
-    const response = await axios.get(`http://localhost:4000/api/expense/getAll?selectedDate=${date}`, setNetworkHeader());
+    const response = await axios.get(`${API_URL}/api/expense/getAll?selectedDate=${date}`, setNetworkHeader());
     setBudgets(response.data.data)
-    const response1 = await axios.get(`http://localhost:4000/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
+    const response1 = await axios.get(`${API_URL}/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
     setChartData(response1.data.data);
     setMonth('');
 

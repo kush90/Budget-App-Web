@@ -6,7 +6,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from "react-router-dom";
 
-import { setNetworkHeader,capitalize } from '../helper';
+import { setNetworkHeader,capitalize, API_URL } from '../helper';
 import AddExpenseForm from '../components/AddExpenseForm';
 import { useDataContext } from '../context';
 import BudgetItem from '../components/BudgetItem';
@@ -26,7 +26,7 @@ export default function BudgetDetail() {
   async function fetchData() {
     if (params.id) {
       try {
-        const response = await axios.get(`http://localhost:4000/api/budget/get/${params.id}`, setNetworkHeader());
+        const response = await axios.get(`${API_URL}/api/budget/get/${params.id}`, setNetworkHeader());
         setBudget(response.data.data);
       }
       catch (error) {
@@ -38,7 +38,7 @@ export default function BudgetDetail() {
   useEffect(() => {
     async function fetchBudgetsData() {
       try {
-        const response = await axios.get('http://localhost:4000/api/budget/getAll', setNetworkHeader());
+        const response = await axios.get(`${API_URL}/api/budget/getAll`, setNetworkHeader());
         if (response.status === 200) {
           setBudgets(response.data.data);
         }
@@ -59,7 +59,7 @@ export default function BudgetDetail() {
   const handleCreateUpdateExpenseClick = async (data) => {
     if (sharedData && sharedData.type === 'expense') {
       try {
-        const response = await axios.patch(`http://localhost:4000/api/expense/update/${sharedData.data._id}`, data, setNetworkHeader());
+        const response = await axios.patch(`${API_URL}/api/expense/update/${sharedData.data._id}`, data, setNetworkHeader());
         setMessage({ msg: response.data.message, status: 'success' });
         let newData = budget;
         let arr = newData.expenses;
@@ -78,7 +78,7 @@ export default function BudgetDetail() {
     else {
       try {
         data.budgetId = budget._id;
-        const response = await axios.post('http://localhost:4000/api/expense/create', data, setNetworkHeader());
+        const response = await axios.post(`${API_URL}/api/expense/create`, data, setNetworkHeader());
         setMessage({ msg: response.data.message, status: 'success' });
         let newData = budget;
         let arr = newData.expenses;
@@ -95,7 +95,7 @@ export default function BudgetDetail() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:4000/api/expense/delete/${id}`, setNetworkHeader());
+      const response = await axios.delete(`${API_URL}/api/expense/delete/${id}`, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
       let data = budget;
       let arr = data.expenses;
@@ -111,7 +111,7 @@ export default function BudgetDetail() {
 
   const budgetDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:4000/api/budget/delete/${id}`, setNetworkHeader());
+      const response = await axios.delete(`${API_URL}/api/budget/delete/${id}`, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
       setBudget('');
       navigate('/home')
