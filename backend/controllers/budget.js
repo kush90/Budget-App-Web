@@ -95,7 +95,7 @@ const get = async (req, res) => {
         if (!budget) {
             return res.status(404).json({ error: 'No such budget' })
         }
-        const expenses = await Expense.find({ budgetId: id, userId: userId });
+        const expenses = await Expense.find({ budgetId: id, userId: userId }).sort({ createdAt: -1 });
         budget["expenses"] = expenses
         res.status(200).json({ data: budget })
     } catch (error) {

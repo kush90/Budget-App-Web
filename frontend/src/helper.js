@@ -1,7 +1,8 @@
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 
-export const API_URL ="https://budget-app-api-pgfu.onrender.com";
+// export const API_URL ="https://budget-app-api-pgfu.onrender.com";
+export const API_URL = "http://localhost:4000"
 
 export const createStorage = (key, item) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(item));
