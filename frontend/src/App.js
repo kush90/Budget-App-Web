@@ -87,7 +87,7 @@ function App() {
 
   return (
     <>
-      {loading ?? <LinearProgress />}
+      { loading === true ? <LinearProgress /> : ''}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

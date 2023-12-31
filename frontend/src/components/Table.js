@@ -35,19 +35,12 @@ export default function TableCustomized({ data, handleDelete, showBudget = true,
 
   const editExpense = (expense) => {
     updateData({ type: 'expense', data: expense })
-    scrollToTop();
   }
 
   const deleteExpense = async (expense) => {
     handleDelete(expense._id)
   }
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth' // Optional: adds a smooth scrolling effect
-    });
-  };
 
   useEffect(() => {
     if (data && paginate) {

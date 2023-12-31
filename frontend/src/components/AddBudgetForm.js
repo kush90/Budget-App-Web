@@ -9,7 +9,7 @@ import { useDataContext } from '../context'; // to share data across the app
 
 import { Item } from '../helper';
 
-export default function AddBudgetForm({ handleCreateUpdate }) {
+export default function AddBudgetForm({ handleCreateUpdate,handleCloseForm }) {
 
     const [name, setName] = React.useState('');
     const [amount, setAmount] = React.useState('');
@@ -41,7 +41,8 @@ export default function AddBudgetForm({ handleCreateUpdate }) {
         setName('');
         setAmount('');
         setColor('');
-        updateData('')
+        updateData('');
+        handleCloseForm();
     }
 
     return (

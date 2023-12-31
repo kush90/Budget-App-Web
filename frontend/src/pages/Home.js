@@ -3,14 +3,16 @@ import Grid from '@mui/material/Grid';
 import axios from "axios";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import AddExpenseForm from '../components/AddExpenseForm';
 import TextField from '@mui/material/TextField';
 import LinearProgress from '@mui/material/LinearProgress';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import Tooltip from '@mui/material/Tooltip';
 
-import AddBudgetForm from '../components/AddBudgetForm';
 import BudgetItem from '../components/BudgetItem';
 import { DataProvider } from '../context';
 import { setNetworkHeader, generateRandomColor, API_URL } from '../helper';
+import { ModalForm } from '../components/ModalForm';
 
 
 const Home = () => {
@@ -19,9 +21,11 @@ const Home = () => {
   const [errorControl, setErrorControl] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  const [openModalForm, setOpenModalForm] = React.useState(false);
+
   useEffect(() => {
+    setLoading(true);
     async function fetchData() {
-      setLoading(true)
       try {
         const response = await axios.get(`${API_URL}/api/budget/getAll`, setNetworkHeader());
         if (response.status === 200) {
@@ -30,12 +34,25 @@ const Home = () => {
         }
       }
       catch (error) {
-        setLoading(false)
+        if (error.response && error.response.status === 400) {
+          setMessage({ msg: error.response.data.error, status: 'error' });
+        }
+        else {
+          setMessage({ msg: error.message, status: 'error' })
+        }
+        setErrorControl(true);
+        setLoading(false);
       }
     }
     fetchData();
 
-  }, [message]);
+  }, []);
+
+  /*      **** Create & Update Budget   ****       */
+  const handleCloseModalForm = (value) => {
+    setOpenModalForm(false); // close modal
+    if (value) handleCreateUpdate(value); // update data from modal
+  };
 
   const handleCreateUpdate = async (data) => {
     setLoading(true);
@@ -50,7 +67,12 @@ const Home = () => {
         setBudgets(newArr);
         setLoading(false);
       } catch (error) {
-        setMessage({ msg: error.response.data.error, status: 'error' });
+        if (error.response && error.response.status === 400) {
+          setMessage({ msg: error.response.data.error, status: 'error' });
+        }
+        else {
+          setMessage({ msg: error.message, status: 'error' })
+        }
         setErrorControl(true);
         setLoading(false);
       }
@@ -69,15 +91,21 @@ const Home = () => {
         setErrorControl(true);
         setLoading(false)
       } catch (error) {
-        if (error.response.status === 400) {
+        if (error.response && error.response.status === 400) {
           setMessage({ msg: error.response.data.error, status: 'error' });
-          setErrorControl(true);
-          setLoading(false)
         }
+        else {
+          setMessage({ msg: error.message, status: 'error' })
+        }
+        setErrorControl(true);
+        setLoading(false);
       }
     }
   }
 
+  /*      **** End Of Create & Update Budget   ****       */
+
+  // close error message
   function handleClose(event, reason) {
     if (reason === 'clickaway') {
       return;
@@ -86,32 +114,41 @@ const Home = () => {
     setErrorControl(false);
   };
 
+  /*      **** Create & Update Expense   ****       */
   const handleCreateUpdateExpenseClick = async (data) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/api/expense/create`, data, setNetworkHeader());
       setMessage({ msg: response.data.message, status: 'success' });
-      budgets.map((budget) => {
-        if (budget._id === data.budgetId) {
-          return budget.expenses.push(response.data.data)
-        }
-        return budget
-      })
-      setErrorControl(true);
-      setLoading(false)
-    }
-    catch (error) {
-      console.error(error);
-
-      if (error.response.status === 400) {
-        setMessage({ msg: error.response.data.error, status: 'error' });
+      const updatedDataArray = [...budgets];
+      const updatedParentIndex = updatedDataArray.findIndex(item => item._id === data.budgetId);
+      if (updatedParentIndex !== -1) {
+        const updatedChildArray = [...updatedDataArray[updatedParentIndex].expenses, response.data.data];
+        updatedDataArray[updatedParentIndex] = {
+          ...updatedDataArray[updatedParentIndex],
+          expenses: updatedChildArray,
+        };
+        setBudgets(updatedDataArray)
         setErrorControl(true);
         setLoading(false)
       }
     }
+    catch (error) {
+      console.error(error);
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
 
   }
+  /*      **** End Of Create & Update Expense   ****       */
 
+  // Delete Budget
   const deleteBudget = async (id) => {
     setLoading(true)
     try {
@@ -121,43 +158,55 @@ const Home = () => {
       setErrorControl(true);
       setLoading(false)
     } catch (error) {
-      setMessage({ msg: error.response.data.error, status: 'error' });
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
       setErrorControl(true);
-      setLoading(false)
+      setLoading(false);
     }
   }
 
+  // search by budget name
   const searchName = async (event) => {
     setLoading(true)
-    const response = await axios.get(`${API_URL}/api/budget/getAll?search=${event.target.value}`, setNetworkHeader());
-    setBudgets(response.data.data);
-    setLoading(false)
-
-
+    try {
+      const response = await axios.get(`${API_URL}/api/budget/getAll?search=${event.target.value}`, setNetworkHeader());
+      setBudgets(response.data.data);
+      setLoading(false)
+    }
+    catch (error) {
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
   }
 
   return (
     <DataProvider>
-      {loading ?? <LinearProgress />}
-      <h2 style={{ "marginLeft": "22px" }}>Dashboard</h2>
-      <Grid className='home-card' container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item lg={6} xs={12} md={6} sm={12}>
-          <AddBudgetForm handleCreateUpdate={handleCreateUpdate} />
-        </Grid>
-        <Grid item lg={6} xs={12} md={6} sm={12}>
-          <AddExpenseForm budgets={budgets} handleCreateUpdateClick={handleCreateUpdateExpenseClick} />
-        </Grid>
-
-      </Grid>
-      <h2 style={{ "marginLeft": "22px" }}>Budgets ({budgets.length})</h2>
-      <TextField style={{ marginLeft: 22 }} onKeyUp={searchName} width={210} id="standard-basic" placeholder='Enter name to search ...' focused={true} label="Name" variant="standard" />
+      {loading === true ? <LinearProgress /> : ''}
+      <h2 style={{ "marginLeft": "22px" }}>Budgets ({budgets.length})
+        <Tooltip title="Create Budget">
+          <Fab size="small" style={{ marginLeft: 20 }} color="primary" aria-label="add" onClick={() => { setOpenModalForm(true) }}>
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+        <TextField style={{ marginLeft: 22 }} onKeyUp={searchName} width={210} id="standard-basic" placeholder='Enter name to search ...' focused={true} label="Name" variant="standard" />
+      </h2>
       <Grid className='home-card' container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
 
         {budgets.map((budget) => {
           return (
 
             <Grid key={budget._id} item xs={12} md={4} sm={12} >
-              <BudgetItem key={budget._id} budget={budget} deleteBudgetClick={deleteBudget} />
+              <BudgetItem key={budget._id} budget={budget} deleteBudgetClick={deleteBudget} handleCreateUpdate={handleCreateUpdate} handleCreateUpdateExpenseClick={handleCreateUpdateExpenseClick} />
             </Grid>
           )
         })}
@@ -168,6 +217,10 @@ const Home = () => {
             {message.msg}
           </Alert>
         </Snackbar>
+        <ModalForm
+          open={openModalForm}
+          onClose={handleCloseModalForm}
+        />
       </Grid>
     </DataProvider>
 

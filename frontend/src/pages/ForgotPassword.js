@@ -74,7 +74,7 @@ function ForgotPassword() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-       {loading ?? <LinearProgress />}
+       { loading === true ? <LinearProgress /> : ''}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

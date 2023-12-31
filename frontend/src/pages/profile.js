@@ -11,8 +11,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DatePicker from "react-datepicker";
 import LinearProgress from '@mui/material/LinearProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
-import { setNetworkHeader, months,API_URL } from '../helper';
+import { setNetworkHeader, months, API_URL } from '../helper';
 import Table from '../components/Table';
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,17 +26,37 @@ const Profile = () => {
   const [month, setMonth] = useState('');
   const [paginate, setPaginate] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [message, setMessage] = React.useState('');
+  const [errorControl, setErrorControl] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  // Filter by month
   const handleChangeMonth = async (event) => {
-    setMonth(event.target.value);
-    const response = await axios.get(`${API_URL}/api/expense/getAll?month=${event.target.value}`, setNetworkHeader());
-    const response1 = await axios.get(`${API_URL}/api/budget/chartData?month=${event.target.value}`, setNetworkHeader());
-    setChartData(response1.data.data);
-    setBudgets(response.data.data);
-    setPaginate(response.data.paginate);
-    setSelectedDate('');
+    try {
+      setLoading(true)
+      setMonth(event.target.value);
+      const response = await axios.get(`${API_URL}/api/expense/getAll?month=${event.target.value}`, setNetworkHeader());
+      const response1 = await axios.get(`${API_URL}/api/budget/chartData?month=${event.target.value}`, setNetworkHeader());
+      setChartData(response1.data.data);
+      setBudgets(response.data.data);
+      setPaginate(response.data.paginate);
+      setSelectedDate('');
+      setLoading(false)
+    }
+
+    catch (error) {
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
   }
+
+  // Get all budgets data for chart and all expeneses data for table
   async function fetchData() {
     setLoading(true)
     try {
@@ -46,57 +68,128 @@ const Profile = () => {
       setLoading(false)
     }
     catch (error) {
-      setLoading(false)
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
     }
   }
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Search by expense name
   const searchName = async (event) => {
-    setLoading(true)
-    const response = await axios.get(`${API_URL}/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
-    setBudgets(response.data.data)
-    setLoading(false)
+    try {
+      setLoading(true)
+      const response = await axios.get(`${API_URL}/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
+      setBudgets(response.data.data)
+      setLoading(false)
+    }
+    catch (error) {
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
+
   }
 
+  // Get data when the next button from table is clicked
   const tableNextBtn = async (page) => {
-    setLoading(true)
-    const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}`, setNetworkHeader());
-    setBudgets(response.data.data)
-    setPaginate(response.data.paginate);
-    setLoading(false)
+    try {
+      setLoading(true)
+      const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}`, setNetworkHeader());
+      setBudgets(response.data.data)
+      setPaginate(response.data.paginate);
+      setLoading(false)
+    }
+    catch (error) {
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
+
   }
 
+  // Get data when the select option of total per page from table is clicked
   const tablePerPage = async (rows, page) => {
-    setLoading(true)
-    const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
-    setBudgets(response.data.data)
-    setPaginate(response.data.paginate);
-    setLoading(false)
+    try {
+      setLoading(true)
+      const response = await axios.get(`${API_URL}/api/expense/getAll?page=${page}&&rows=${rows}`, setNetworkHeader());
+      setBudgets(response.data.data)
+      setPaginate(response.data.paginate);
+      setLoading(false)
+    }
+    catch (error) {
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
+
   }
 
+  // Get data from selected date from date picker
   const changeDate = async (date) => {
-    setLoading(true)
-    setSelectedDate(date);
-    const response = await axios.get(`${API_URL}/api/expense/getAll?selectedDate=${date}`, setNetworkHeader());
-    setBudgets(response.data.data)
-    const response1 = await axios.get(`${API_URL}/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
-    setChartData(response1.data.data);
-    setMonth('');
-    setLoading(false)
+    try {
+      setLoading(true)
+      setSelectedDate(date);
+      const response = await axios.get(`${API_URL}/api/expense/getAll?selectedDate=${date}`, setNetworkHeader());
+      setBudgets(response.data.data)
+      const response1 = await axios.get(`${API_URL}/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
+      setChartData(response1.data.data);
+      setMonth('');
+      setLoading(false)
+    }
+    catch (error) {
+      if (error.response && error.response.status === 400) {
+        setMessage({ msg: error.response.data.error, status: 'error' });
+      }
+      else {
+        setMessage({ msg: error.message, status: 'error' })
+      }
+      setErrorControl(true);
+      setLoading(false);
+    }
+
 
   }
 
-  const clearFilter = () =>{
+  const clearFilter = () => {
     fetchData();
     setSelectedDate('');
     setMonth('')
   }
+  // close error message
+  function handleClose(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setErrorControl(false);
+  };
   return (
 
     <>
-     {loading ?? <LinearProgress />}
+      {loading ? <LinearProgress /> : ''}
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
         <Grid item lg={4} xs={12} md={3} sm={12}>
           <h1>Your expenses report</h1>
@@ -155,6 +248,12 @@ const Profile = () => {
           <Table data={budgets} showBudget={true} showAction={false} tableNextBtn={tableNextBtn} tablePerPage={tablePerPage} paginate={paginate} ></Table>
         </Grid>
       </Grid>
+      <Snackbar onClose={handleClose} autoHideDuration={3000}
+        open={errorControl} >
+        <Alert onClose={handleClose} severity={message.status} sx={{ width: '100%' }}>
+          {message.msg}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

@@ -46,8 +46,8 @@
   margin-top: -16px;
   width: calc(100% + 12px);
   margin-left: -16px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  /* border-top-left-radius: 5px; */
+  /* border-top-right-radius: 5px; */
   color: white;
   font-weight: bold;
 }
@@ -220,5 +220,17 @@
   .clear-btn {
     top: -9px;
     left: 0px;
+  }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .date-picker-box {
+    position: relative;
+    top: -18px;
+  }
+
+  .clear-btn {
+    left: 0px;
+    top: -3px;
   }
 }
