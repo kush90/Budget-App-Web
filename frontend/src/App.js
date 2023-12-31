@@ -75,12 +75,14 @@ function App() {
         }
       })
       .catch(error => {
-        if(error.response.status === 400) {
+        if (error.response && error.response.status === 400) {
           setMessage({ msg: error.response.data.error, status: 'error' });
-          setErrorControl(true);
-          setLoading(false)
-          
         }
+        else {
+          setMessage({ msg: error.message, status: 'error' })
+        }
+        setErrorControl(true);
+        setLoading(false);
         
       })
   };
