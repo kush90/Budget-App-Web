@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Legend, Tooltip, Cell, ResponsiveContainer } from 'recharts';
-
+import {
+    formatCurrency,
+    capitalize
+  } from "../helper";
 
 const PieChartComponent = ({ data }) => {
     const [newData, setNewData] = useState([]);
@@ -9,6 +12,7 @@ const PieChartComponent = ({ data }) => {
         if (data.length > 0) setNewData(data)
         else setNewData([]);
     }, [data]);
+
     const CustomTooltip = ({ active, payload, label }) => {
         if (payload.length > 0) {
             return (
@@ -20,12 +24,17 @@ const PieChartComponent = ({ data }) => {
                         border: "1px solid #cccc"
                     }}
                 >
-                    <label>{`${payload[0].name} : ${payload[0].value}`}</label>
+                    <label>{`${capitalize(payload[0].name)} : ${formatCurrency(payload[0].value)}`}</label>
                 </div>
             );
         }
         return null;
     };
+
+    let renderLabel = function(entry) {
+        return `${capitalize(entry.name)} - ${formatCurrency(entry.value)}`;
+    } 
+
     return (
         <>
 
@@ -45,7 +54,7 @@ const PieChartComponent = ({ data }) => {
                                     labelLine={false}
                                     outerRadius={80}
                                     fill="#8884d8"
-                                    label={({ name }) => name}
+                                    label={renderLabel}
                                 >
                                     {newData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={`hsl(${entry.color})`} />

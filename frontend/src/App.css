@@ -199,6 +199,12 @@
   top: 16px;
 }
 
+.legend {
+
+  margin-left:10px;
+
+}
+
 @media screen and (max-width: 600px) {
   .title1 {
     display: none;
