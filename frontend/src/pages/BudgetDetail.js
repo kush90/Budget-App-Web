@@ -226,7 +226,7 @@ export default function BudgetDetail() {
       </Grid>
       <h2 style={{ "marginLeft": "22px" }}>Expenses ({budget?.expenses?.length})</h2>
       <Grid className='home-card' container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 3 }}>
-        <Grid item xs={12}>
+        <Grid className='table-grid' item xs={12}>
           <ClientSideTable data={budget.expenses} handleDelete={handleDelete} showBudget={false} handleEditExpense={handleEditExpense}></ClientSideTable>
         </Grid>
 
