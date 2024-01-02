@@ -11,11 +11,13 @@ import Tooltip from '@mui/material/Tooltip';
 
 import BudgetItem from '../components/BudgetItem';
 import { DataProvider } from '../context';
-import { setNetworkHeader, generateRandomColor, API_URL } from '../helper';
+import { setNetworkHeader, generateRandomColor, API_URL, checkStorage } from '../helper';
 import { ModalForm } from '../components/ModalForm';
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
+  const navigate = useNavigate();
   const [budgets, setBudgets] = React.useState([]);
   const [message, setMessage] = React.useState('');
   const [errorControl, setErrorControl] = React.useState(false);
@@ -44,7 +46,10 @@ const Home = () => {
         setLoading(false);
       }
     }
-    fetchData();
+    if (checkStorage('user') === true){ fetchData()}
+    else {
+      navigate('/');
+    }
 
   }, []);
 

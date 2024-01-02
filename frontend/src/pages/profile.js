@@ -13,14 +13,16 @@ import DatePicker from "react-datepicker";
 import LinearProgress from '@mui/material/LinearProgress';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { useNavigate } from "react-router-dom";
 
-import { setNetworkHeader, months, API_URL } from '../helper';
+import { setNetworkHeader, months, API_URL, checkStorage } from '../helper';
 import Table from '../components/Table';
 
 import "react-datepicker/dist/react-datepicker.css";
 
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [chartData, setChartData] = useState('');
   const [budgets, setBudgets] = useState([]);
   const [month, setMonth] = useState('');
@@ -79,7 +81,10 @@ const Profile = () => {
     }
   }
   useEffect(() => {
-    fetchData();
+    if (checkStorage('user') === true){ fetchData()}
+    else {
+      navigate('/');
+    }
   }, []);
 
   // Search by expense name

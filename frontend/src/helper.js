@@ -11,6 +11,10 @@ export const createStorage = (key, item) => {
 export const getStorage = (key) => {
     return localStorage.getItem(key);
 }
+export const checkStorage = (key) => {
+  if(localStorage.getItem(key)) return true;
+  else return false;
+}
 
 export const clearStorage = (key) =>{
     localStorage.clear();

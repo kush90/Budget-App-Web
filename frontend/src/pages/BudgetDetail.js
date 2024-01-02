@@ -10,7 +10,7 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 
-import { setNetworkHeader, capitalize, API_URL } from '../helper';
+import { setNetworkHeader, capitalize, API_URL, checkStorage } from '../helper';
 import { useDataContext } from '../context';
 import BudgetItem from '../components/BudgetItem';
 import ClientSideTable from '../components/ClientSideTable';
@@ -52,7 +52,10 @@ export default function BudgetDetail() {
   }
 
   useEffect(() => {
-    fetchData();
+    if (checkStorage('user') === true){ fetchData()}
+    else {
+      navigate('/');
+    }
   }, [params.id, message]);
 
   // close error message
