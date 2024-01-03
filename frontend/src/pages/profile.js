@@ -93,6 +93,7 @@ const Profile = () => {
       setLoading(true)
       const response = await axios.get(`${API_URL}/api/expense/getAll?search=${event.target.value}`, setNetworkHeader());
       setBudgets(response.data.data)
+      setPaginate(response.data.paginate);
       setLoading(false)
     }
     catch (error) {
@@ -161,6 +162,7 @@ const Profile = () => {
       setBudgets(response.data.data)
       const response1 = await axios.get(`${API_URL}/api/budget/chartData?selectedDate=${date}`, setNetworkHeader());
       setChartData(response1.data.data);
+      setPaginate(response.data.paginate)
       setMonth('');
       setLoading(false)
     }

@@ -55,9 +55,6 @@ const getAll = async (req, res) => {
         rows = req.query.rows ? +req.query.rows : 5;
         page = req.query.page ? +req.query.page : 0;
         const userId = req.user._id;
-        const totalItems = await Expense.countDocuments({
-            userId: userId
-        });
         let query;
         if (Object.keys(req.query).length !== 0) {
 
@@ -96,6 +93,7 @@ const getAll = async (req, res) => {
                 userId: userId,
             }
         }
+        const totalItems = await Expense.countDocuments(query);
         let paginate = {
             totalItems, page, rows
         }
