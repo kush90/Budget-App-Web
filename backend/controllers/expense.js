@@ -54,8 +54,10 @@ const getAll = async (req, res) => {
     try {
         rows = req.query.rows ? +req.query.rows : 5;
         page = req.query.page ? +req.query.page : 0;
-        const totalItems = await Expense.countDocuments();
         const userId = req.user._id;
+        const totalItems = await Expense.countDocuments({
+            userId: userId
+        });
         let query;
         if (Object.keys(req.query).length !== 0) {
 
