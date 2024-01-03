@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { PieChart, Pie, Legend, Tooltip, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Legend, Tooltip, Cell, ResponsiveContainer, LabelList } from 'recharts';
 import {
     formatCurrency,
     capitalize
-  } from "../helper";
+} from "../helper";
 
 const PieChartComponent = ({ data }) => {
     const [newData, setNewData] = useState([]);
@@ -31,9 +31,9 @@ const PieChartComponent = ({ data }) => {
         return null;
     };
 
-    let renderLabel = function(entry) {
-        return `${capitalize(entry.name)} - ${formatCurrency(entry.value)}`;
-    } 
+    let renderLabel = function ( entry) {
+        return `${formatCurrency(entry.value)}`
+    }
 
     return (
         <>
@@ -45,17 +45,25 @@ const PieChartComponent = ({ data }) => {
                             <PieChart >
                                 <Legend layout="horizontal" verticalAlign="top" align="top" />
                                 <Pie
+                                 width="100%" height={372}
                                     data={newData}
                                     isAnimationActive={true}
                                     dataKey="value"
                                     nameKey="name"
                                     cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
+                                     cy="50%"
+                                    labelLine={true}
                                     outerRadius={80}
                                     fill="#8884d8"
                                     label={renderLabel}
+                                    
                                 >
+                                    <LabelList
+                                        dataKey="name"
+                                        position="insideRight"
+                                        fill="#8884d8"
+                                        style={{ fontSize: "13px" }}
+                                    />
                                     {newData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={`hsl(${entry.color})`} />
                                     ))}
